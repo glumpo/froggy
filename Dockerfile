@@ -19,9 +19,7 @@ FROM debian:11.5
 
 WORKDIR /opt/froggy
 COPY --from=build /app/dist/* .
-
-ARG config=/etc/config.toml
-COPY --from=build /app"$config" .
+COPY --from=build /app/etc/config.toml ./config.toml
 
 RUN useradd nonroot --user-group --no-create-home
 RUN chown -R nonroot:nonroot /opt/froggy && chmod -R 755 /opt/froggy

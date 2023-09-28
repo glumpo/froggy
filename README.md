@@ -13,5 +13,15 @@ make froggy
 ```
 
 ## Provide config
-All configuration could (should) be provided with .env file. 
+All configuration should be provided with toml config file.
+
+### Docker
+Default config path is `./etc/config.toml`
+Path could not be configured for now.
+
+### Server binary
+Use `-c` to provide path:
+```
+./froggy -c /custom/path
+```
 

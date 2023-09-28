@@ -29,7 +29,7 @@ linux:
 	GOOS=linux GOARCH=amd64 make froggy
 
 .PHONY: old_darwin
-darwin:
+old_darwin:
 	GOOS=darwin GOARCH=amd64 make froggy
 
 .PHONY: darwin

@@ -20,21 +20,16 @@ type Logger struct {
 }
 
 type Telegram struct {
-	ID   string
-	Hash string
+	Token string `toml:"token"`
 }
 
 func (t Telegram) String() string {
 	const limit = 4
-	id := "too small"
-	hash := "too small"
-	if len(t.ID) > limit {
-		id = t.ID[:limit]
+	token := "too small"
+	if len(t.Token) > limit {
+		token = t.Token[:limit]
 	}
-	if len(t.Hash) > limit {
-		hash = t.Hash[:limit]
-	}
-	return fmt.Sprintf("ID: %s, Hash: %s", id, hash)
+	return fmt.Sprintf("Token: %s...", token)
 }
 
 func DefaultCfg() *Config {
@@ -43,8 +38,7 @@ func DefaultCfg() *Config {
 		Debug: true,
 	}
 	cfg.API = Telegram{
-		ID:   "none",
-		Hash: "none",
+		Token: "none",
 	}
 
 	return cfg

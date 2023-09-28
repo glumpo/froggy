@@ -20,16 +20,19 @@ var (
 
 func main() {
 	if err := do(); err != nil {
-		fmt.Printf("Error: %v", err)
+		_, _ = fmt.Fprintf(os.Stderr, "Fatal froggy error: %v", err)
 		os.Exit(1)
 	}
 }
 
 func do() error {
-	printVersion := flag.Bool("version", false, "Get version")
-	cfgPath := flag.String("config", "config.toml", "Provide config path")
+	var printVersion bool
+	var cfgPath string
+	flag.BoolVar(&printVersion, "v", false, "Get version")
+	flag.StringVar(&cfgPath, "c", "config.toml", "Provide config path")
 	flag.Parse()
-	if *printVersion {
+
+	if printVersion {
 		fmt.Printf("Version: %s\n", version)
 		fmt.Printf("Build Date: %s\n", date)
 		fmt.Printf("Build Commit: %s\n", commit)
@@ -37,7 +40,7 @@ func do() error {
 	}
 
 	// init
-	cfgRaw, err := os.ReadFile(*cfgPath)
+	cfgRaw, err := os.ReadFile(cfgPath)
 	if err != nil {
 		return fmt.Errorf("failed to read config %s: %w", cfgPath, err)
 	}
@@ -51,12 +54,16 @@ func do() error {
 
 	logger := log.New(cfg.Logger)
 	logger.Infof("Version: %s, build data: %s, build commit: %s", version, date, commit)
-	logger.Infof("Config: %s", cfg)
+	logger.Debugf("Config path: %s", cfgPath)
+	logger.Debugf("Config: %s", cfg)
 
 	// start
 	var s serverModel.Server
 	s = server.New(cfg, logger.WithSource("server"))
-	s.Start()
+	err = s.Start()
+	if err != nil {
+		return fmt.Errorf("starting server: %w", err)
+	}
 
 	// shutdown handling
 	ch := make(chan os.Signal, 1)
